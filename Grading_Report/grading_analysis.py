@@ -26,17 +26,18 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
         # Remove zero values
         valid_grades = valid_grades[valid_grades > 0]
 
+        print("\nThis analysis only considered the number of submissions (don't include zeros)")
         print("\nStatistical Analysis:")
+        print(f"Number of Submissions: {valid_grades.count()}")
         print(f"Mean: {valid_grades.mean():.2f}")
         print(f"Median: {valid_grades.median():.2f}")
         print(f"Standard Deviation: {valid_grades.std():.2f}")
         print(f"Minimum: {valid_grades.min():.2f}")
         print(f"Maximum: {valid_grades.max():.2f}")
-        print(f"Number of Submissions: {valid_grades.count()}")
 
         # Histogram
         plt.figure(figsize=(10, 6))
-        plt.hist(valid_grades, bins=np.arange(0, 6, 0.5), edgecolor='black', alpha=0.7)
+        plt.hist(grades[report], bins=np.arange(0, 6, 0.5), edgecolor='black', alpha=0.7)
         plt.title(f"Grade Distribution for {report}")
         plt.xlabel("Grades")
         plt.ylabel("Number of Students")
