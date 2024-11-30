@@ -20,7 +20,12 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
         print(f"Grades for {report}:")
         print(grades)
 
+        # Drop NaN values
         valid_grades = grades[report].dropna()
+
+        # Remove zero values
+        valid_grades = valid_grades[valid_grades > 0]
+
         print("\nStatistical Analysis:")
         print(f"Mean: {valid_grades.mean():.2f}")
         print(f"Median: {valid_grades.median():.2f}")
@@ -29,6 +34,7 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
         print(f"Maximum: {valid_grades.max():.2f}")
         print(f"Number of Submissions: {valid_grades.count()}")
 
+        # Histogram
         plt.figure(figsize=(10, 6))
         plt.hist(valid_grades, bins=np.arange(0, 6, 0.5), edgecolor='black', alpha=0.7)
         plt.title(f"Grade Distribution for {report}")
@@ -40,6 +46,7 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
         plt.grid(axis="y", linestyle="--", alpha=0.7)
         plt.show()
 
+        # Bar chart for individual grades
         plt.figure(figsize=(12, 8))
         grades.set_index('Initials')[report].plot(kind='bar', color='skyblue', edgecolor='black')
         plt.title(f"Individual Grades for {report}")
@@ -50,6 +57,7 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
         plt.legend()
         plt.grid(axis="y", linestyle="--", alpha=0.7)
         plt.show()
+
 
     if submitted:
         # Handle submissions as before
@@ -81,8 +89,15 @@ def process_grades(report=None, grade=False, submitted=False, final=False):
             print(f"Error: Columns {required_columns - set(df.columns)} are missing for final grade calculation.")
             return
         
+        # Replace NaN values in the required columns
+        df[['P1', 'P2', 'P3', 'Quices']] = df[['P1', 'P2', 'P3', 'Quices']].fillna(0)
+
         # Calculate final grades
         df['Final'] = (df['P1'] * 0.3 + df['P2'] * 0.3 + df['P3'] * 0.25 + df['Quices'] * 0.15)
+
+        # Display the calculated final grades
+        print("Calculated Final Grades:")
+        print(df[['Initials', 'Final']])
 
         # Statistical analysis for final grades
         final_grades = df['Final']
